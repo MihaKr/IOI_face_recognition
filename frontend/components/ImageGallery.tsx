@@ -5,15 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
-const ImageGallery = ({ setImages, images, selectedImage, setSelectedImage }) => {
-    const handleRemove = (index) => {
+import {CapturedImage, SomethingProps} from "@/app/types";
+
+
+const ImageGallery: React.FC<SomethingProps> = ({setImages, images, selectedImage, setSelectedImage}) => {
+    const handleRemove = (index:number) => {
         setImages(images.filter((_, i) => i !== index));
         if (selectedImage === images[index]) {
-            setSelectedImage({ image: '', label: '', strength: 0.0 });
+            setSelectedImage({image: '', label: '', strength: 0.0});
         }
     };
 
-    const handleSelect = (image) => {
+    const handleSelect = (image: React.SetStateAction<CapturedImage>) => {
         setSelectedImage(image);
     };
 

@@ -1,30 +1,30 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import * as faceapi from 'face-api.js';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Camera, StopCircle, Camera as CameraIcon } from 'lucide-react';
+import { CapturedImage } from "@/app/types";
 
-const FaceDetection = ({ setImages, images, selectedImage, setSelectedImage }) => {
-    const videoRef = useRef(null);
-    const canvasRef = useRef(null);
-    const galleryRef = useRef(null);
+
+interface FaceDetectionProps {
+    setImages: React.Dispatch<React.SetStateAction<CapturedImage[]>>;
+    images: CapturedImage[];
+}
+
+const FaceDetection: React.FC<FaceDetectionProps> = ({ setImages, images }) => {
+    const videoRef = useRef<HTMLVideoElement | null>(null); // Explicitly typing the video ref
+    const canvasRef = useRef<HTMLCanvasElement | null>(null); // Explicitly typing the canvas ref
 
     const [modelsLoaded, setModelsLoaded] = useState(false);
     const [isStreaming, setIsStreaming] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
 
-    // Adjusted resolution settings for better laptop display
     const videoConstraints = {
         width: { min: 640, ideal: 1280, max: 1920 },
         height: { min: 480, ideal: 720, max: 1080 },
         facingMode: "user",
         advanced: [
-            {
-                zoom: 1.0
-            },
-            {
-                resizeMode: 'crop-and-scale'
-            }
+            { zoom: 1.0 },
+            { resizeMode: 'crop-and-scale' }
         ]
     };
 
@@ -53,25 +53,16 @@ const FaceDetection = ({ setImages, images, selectedImage, setSelectedImage }) =
             if (videoDevices.length > 0) {
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: {
-                        ...videoConstraints,
-                        deviceId: videoDevices[0].deviceId
+                        deviceId: videoDevices[0].deviceId,
+                        width: { min: 640, ideal: 1280, max: 1920 },
+                        height: { min: 360, ideal: 720, max: 1080 },
+                        facingMode: "user",
                     }
                 });
 
                 if (videoRef.current) {
                     videoRef.current.srcObject = stream;
                     const videoTrack = stream.getVideoTracks()[0];
-
-                    try {
-                        const capabilities = videoTrack.getCapabilities();
-                        if (capabilities.zoom) {
-                            await videoTrack.applyConstraints({
-                                advanced: [{ zoom: 1.0 }]
-                            });
-                        }
-                    } catch (error) {
-                        console.log('Zoom adjustment not supported:', error);
-                    }
 
                     await videoRef.current.play();
                     setIsStreaming(true);
@@ -84,7 +75,7 @@ const FaceDetection = ({ setImages, images, selectedImage, setSelectedImage }) =
 
     const stopVideo = useCallback(() => {
         if (videoRef.current?.srcObject) {
-            const stream = videoRef.current.srcObject;
+            const stream = videoRef.current.srcObject as MediaStream;
             const tracks = stream.getTracks();
             tracks.forEach(track => track.stop());
             videoRef.current.srcObject = null;
@@ -105,7 +96,7 @@ const FaceDetection = ({ setImages, images, selectedImage, setSelectedImage }) =
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
 
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                context?.drawImage(video, 0, 0, canvas.width, canvas.height);
                 const imageDataURL = canvas.toDataURL("image/png", 1.0);
 
                 const detections = await faceapi
@@ -137,8 +128,12 @@ const FaceDetection = ({ setImages, images, selectedImage, setSelectedImage }) =
         }
     };
 
+    function delay(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     useEffect(() => {
-        let animationFrameId;
+        let animationFrameId: number;
         let isPageVisible = true;
 
         // Handle tab visibility changes
@@ -171,17 +166,19 @@ const FaceDetection = ({ setImages, images, selectedImage, setSelectedImage }) =
                     const resizedDetections = faceapi.resizeResults(detections, displaySize);
 
                     const ctx = canvas.getContext('2d');
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx?.clearRect(0, 0, canvas.width, canvas.height);
 
                     resizedDetections.forEach(detection => {
+                        if (ctx) {
                         ctx.strokeStyle = '#00ff88';
                         ctx.lineWidth = 2;
-                        ctx.strokeRect(
+                        ctx?.strokeRect(
                             detection.detection.box.x,
                             detection.detection.box.y,
                             detection.detection.box.width,
                             detection.detection.box.height
-                        );
+
+                        )};
 
                         const emotion = Object.entries(detection.expressions)
                             .reduce((acc, [key, value]) =>
@@ -189,27 +186,38 @@ const FaceDetection = ({ setImages, images, selectedImage, setSelectedImage }) =
                                 ['', 0]
                             )[0];
 
-                        ctx.font = '20px Arial';
-                        ctx.fillStyle = '#00ff88';
-                        ctx.fillText(
+                        if (ctx) {
+                            ctx.font = '20px Arial';
+                            ctx.fillStyle = '#00ff88';
+                        }
+                        ctx?.fillText(
                             emotion,
                             detection.detection.box.x,
                             detection.detection.box.y - 8
                         );
 
-                        // Draw landmarks with adjusted size
-                        ctx.fillStyle = '#00ff88';
+                        // Only trigger the picture once for each emotion
+                        if (emotion === 'fearful' || emotion === 'disgusted') {
+                            if (!isProcessing) {
+                                takePicture();
+                                delay(2000); // Ensure there's a delay before the next capture
+                            }
+                        }
+
+                        if (ctx) {
+                            ctx.fillStyle = '#00ff88';
+                        }
                         detection.landmarks.positions.forEach(point => {
-                            ctx.beginPath();
-                            ctx.arc(point.x, point.y, 1.5, 0, 2 * Math.PI);
-                            ctx.fill();
+                            ctx?.beginPath();
+                            ctx?.arc(point.x, point.y, 1.5, 0, 2 * Math.PI);
+                            ctx?.fill();
                         });
                     });
                 }
 
                 animationFrameId = requestAnimationFrame(detectFaces);
             } catch (error) {
-                //console.error('Detection error:', error);
+                console.error('Detection error:', error);
             }
         };
 

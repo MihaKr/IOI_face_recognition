@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import * as tf from '@tensorflow/tfjs';
 import * as magenta from '@magenta/image';
 import {Button} from "@/components/ui/button";
 import {Slider} from "@/components/ui/slider";
-import {Wand2} from "lucide-react";
+import {ImageDown, Wand2} from "lucide-react";
 
 interface ImageProp {
     image: { image: string; label: string; strength: number };
@@ -21,8 +20,21 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    // [All existing emotionConfigs and functions remain exactly the same]
-    const emotionConfigs = {
+    type EmotionConfig = {
+        styles: { path: string; weight: number }[];
+    };
+
+    type EmotionConfigs = {
+        happy: EmotionConfig;
+        disgusted: EmotionConfig;
+        neutral: EmotionConfig;
+        surprised: EmotionConfig;
+        angry: EmotionConfig;
+        fearful: EmotionConfig;
+        sad: EmotionConfig;
+    };
+
+    const emotionConfigs: EmotionConfigs = {
         happy: {
             styles: [
                 { path: '/styles/happy/happy1.jpg', weight: 1 },
@@ -30,10 +42,11 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
                 { path: '/styles/happy/happy3.jpg', weight: 1 },
                 { path: '/styles/happy/happy4.jpg', weight: 1 },
                 { path: '/styles/happy/happy5.jpg', weight: 1 },
+                { path: '/styles/happy/happy6.jpg', weight: 1 },
             ],
         },
 
-        disgust: {
+        disgusted: {
             styles: [
                 { path: '/styles/disgust/disgust1.jpg', weight: 1 },
                 { path: '/styles/disgust/disgust2.jpg', weight: 1 },
@@ -73,7 +86,7 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
             ],
         },
 
-        fear: {
+        fearful: {
             styles: [
                 { path: '/styles/fear/fear1.jpg', weight: 1 },
                 { path: '/styles/fear/fear2.jpg', weight: 1 },
@@ -150,16 +163,12 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
         return image;
     }
 
-    const getRandomStyle = (sliderValue: number[], styles: { path: string; weight: number }[]) => {
-        return styles[sliderValue[0]];
-    };
-
     const applyStyleTransfer = async () => {
         if (!model || !inputImage || isProcessing) return;
         setIsProcessing(true);
 
         try {
-            const config = emotionConfigs[emotion.toLowerCase()];
+            const config = emotionConfigs[emotion.toLowerCase() as keyof EmotionConfigs];
             if (!config) {
                 console.error('No configuration for emotion:', emotion);
                 return;
@@ -171,7 +180,7 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
             if (!ctx) return;
 
             ctx.drawImage(inputImage, 0, 0);
-            let currentImage = inputImage;
+            const currentImage = inputImage;
 
             const selectedStyle = getStyleBySliderValue(sliderValue, config.styles); // Use updated logic
 
@@ -197,7 +206,7 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
         const newValue = value[0];
         setSliderValue(newValue);
 
-        const config = emotionConfigs[emotion.toLowerCase()];
+        const config = emotionConfigs[emotion.toLowerCase() as keyof EmotionConfigs];
         if (config) {
             const selectedStyle = getStyleBySliderValue(newValue, config.styles);
             try {
@@ -207,6 +216,18 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
                 console.error('Error loading style image:', error);
             }
         }
+    };
+
+    const handleDownload = () => {
+        const imageSrc = output?.src; // Get the image source
+        const link = document.createElement('a');
+        if (imageSrc != null) {
+            link.href = imageSrc;
+        }
+        link.download = 'converter_image.jpg';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     const getStyleBySliderValue = (
@@ -220,7 +241,6 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
     return (
         <div className="w-full max-w-5xl mx-auto">
             <div className="grid grid-cols-2 gap-8">
-                {/* Original image */}
                 <div className="space-y-3">
                     <h3 className="text-lg font-semibold">Original Image</h3>
                     <div className="relative aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden">
@@ -234,7 +254,6 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
                     </div>
                 </div>
 
-                {/* Style image */}
                 <div className="space-y-3">
                     <h3 className="text-lg font-semibold">Style Image</h3>
                     <div className="relative aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden">
@@ -248,7 +267,6 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
                     </div>
                 </div>
 
-                {/* Stylized image */}
                 <div className="space-y-3">
                     <h3 className="text-lg font-semibold">Stylized Result</h3>
                     <div className="relative aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden">
@@ -276,22 +294,21 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
                 </div>
             </div>
 
-            {/* Slider and Button Control Section */}
             <div className="mt-10 space-y-6">
                 <div className="space-y-3">
                     <h3 className="text-lg font-semibold text-center">Select Style</h3>
                     <div className="flex justify-center">
                         <Slider
                             onValueChange={handleChange}
-                            defaultValue={[0]}
-                            max={5}
+                            defaultValue={[1]}
+                            max={6}
                             step={1}
                             className="w-3/4"
                         />
                     </div>
                 </div>
 
-                <div className="flex justify-center">
+                <div className="flex justify-center space-x-4">
                     <Button
                         onClick={applyStyleTransfer}
                         disabled={isProcessing || !inputImage}
@@ -301,7 +318,18 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
                         <Wand2 className="w-5 h-5 mr-2"/>
                         {isProcessing ? 'Applying Style Transfer...' : 'Apply Style Transfer'}
                     </Button>
+
+                    <Button
+                        onClick={handleDownload}
+                        disabled={isProcessing || !inputImage}
+                        size="lg"
+                        className="px-8 pl-4" // Add left padding specifically for this button
+                    >
+                        <ImageDown className="w-5 h-5 mr-2"/>
+                        {'Download'}
+                    </Button>
                 </div>
+
             </div>
 
             <canvas

@@ -9,6 +9,8 @@ import Converter from "@/components/Converter";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { CapturedImage } from '@/app/types';
 
+
+
 export default function Home() {
     const [images, setImages] = useState<CapturedImage[]>([]);
     const [selectedImage, setSelectedImage] = useState<CapturedImage>({
@@ -16,7 +18,7 @@ export default function Home() {
         label: '',
         strength: 0.0
     });
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading] = useState(false);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -42,8 +44,6 @@ export default function Home() {
                                 <FaceDetection
                                     setImages={setImages}
                                     images={images}
-                                    selectedImage={selectedImage}
-                                    setSelectedImage={setSelectedImage}
                                 />
                             </CardContent>
                         </Card>
@@ -79,9 +79,8 @@ export default function Home() {
                                 ) : (
                                     <Converter
                                         image={selectedImage}
-                                        onProcessingStart={() => setIsLoading(true)}
-                                        onProcessingEnd={() => setIsLoading(false)}
                                     />
+
                                 )}
                             </div>
                         </CardContent>
