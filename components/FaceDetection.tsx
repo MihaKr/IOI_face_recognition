@@ -30,7 +30,7 @@ const FaceDetection: React.FC<FaceDetectionProps> = ({ setImages, images }) => {
 
     useEffect(() => {
         const loadModels = async () => {
-            const MODEL_URL = '/models';
+            const MODEL_URL = '/IOI_face_recognition/models';
             try {
                 await Promise.all([
                     faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
