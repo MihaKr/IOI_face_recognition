@@ -37,72 +37,72 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
     const emotionConfigs: EmotionConfigs = {
         happy: {
             styles: [
-                { path: '/styles/happy/happy1.jpg', weight: 1 },
-                { path: '/styles/happy/happy2.jpg', weight: 1 },
-                { path: '/styles/happy/happy3.jpg', weight: 1 },
-                { path: '/styles/happy/happy4.jpg', weight: 1 },
-                { path: '/styles/happy/happy5.jpg', weight: 1 },
-                { path: '/styles/happy/happy6.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/happy/happy1.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/happy/happy2.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/happy/happy3.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/happy/happy4.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/happy/happy5.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/happy/happy6.jpg', weight: 1 },
             ],
         },
 
         disgusted: {
             styles: [
-                { path: '/styles/disgust/disgust1.jpg', weight: 1 },
-                { path: '/styles/disgust/disgust2.jpg', weight: 1 },
-                { path: '/styles/disgust/disgust3.jpg', weight: 1 },
-                { path: '/styles/disgust/disgust4.jpg', weight: 1 },
-                { path: '/styles/disgust/disgust5.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/disgust/disgust1.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/disgust/disgust2.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/disgust/disgust3.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/disgust/disgust4.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/disgust/disgust5.jpg', weight: 1 },
             ],
         },
 
         neutral: {
             styles: [
-                { path: '/styles/neutral/neutral1.jpg', weight: 1 },
-                { path: '/styles/neutral/neutral2.jpg', weight: 1 },
-                { path: '/styles/neutral/neutral3.jpg', weight: 1 },
-                { path: '/styles/neutral/neutral4.jpg', weight: 1 },
-                { path: '/styles/neutral/neutral5.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/neutral/neutral1.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/neutral/neutral2.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/neutral/neutral3.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/neutral/neutral4.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/neutral/neutral5.jpg', weight: 1 },
             ],
         },
 
         surprised: {
             styles: [
-                { path: '/styles/surprise/surprised1.jpg', weight: 1 },
-                { path: '/styles/surprise/surprised2.jpg', weight: 1 },
-                { path: '/styles/surprise/surprised3.jpg', weight: 1 },
-                { path: '/styles/surprise/surprised4.jpg', weight: 1 },
-                { path: '/styles/surprise/surprised5.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/surprise/surprised1.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/surprise/surprised2.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/surprise/surprised3.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/surprise/surprised4.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/surprise/surprised5.jpg', weight: 1 },
             ],
         },
 
         angry: {
             styles: [
-                { path: '/styles/angry/angry1.jpg', weight: 1 },
-                { path: '/styles/angry/angry2.jpg', weight: 1 },
-                { path: '/styles/angry/angry3.jpg', weight: 1 },
-                { path: '/styles/angry/angry4.jpg', weight: 1 },
-                { path: '/styles/angry/angry5.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/angry/angry1.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/angry/angry2.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/angry/angry3.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/angry/angry4.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/angry/angry5.jpg', weight: 1 },
             ],
         },
 
         fearful: {
             styles: [
-                { path: '/styles/fear/fear1.jpg', weight: 1 },
-                { path: '/styles/fear/fear2.jpg', weight: 1 },
-                { path: '/styles/fear/fear3.jpg', weight: 1 },
-                { path: '/styles/fear/fear4.jpg', weight: 1 },
-                { path: '/styles/fear/fear5.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/fear/fear1.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/fear/fear2.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/fear/fear3.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/fear/fear4.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/fear/fear5.jpg', weight: 1 },
             ],
         },
 
         sad: {
             styles: [
-                { path: '/styles/sadness/sadness1.jpg', weight: 1 },
-                { path: '/styles/sadness/sadness2.jpg', weight: 1 },
-                { path: '/styles/sadness/sadness3.jpg', weight: 1 },
-                { path: '/styles/sadness/sadness4.jpg', weight: 1 },
-                { path: '/styles/sadness/sadness5.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/sadness/sadness1.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/sadness/sadness2.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/sadness/sadness3.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/sadness/sadness4.jpg', weight: 1 },
+                { path: '/IOI_face_recognition/styles/sadness/sadness5.jpg', weight: 1 },
             ],
         },
     };
