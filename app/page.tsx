@@ -10,7 +10,6 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { CapturedImage } from '@/app/types';
 
 
-
 export default function Home() {
     const [images, setImages] = useState<CapturedImage[]>([]);
     const [selectedImage, setSelectedImage] = useState<CapturedImage>({
