@@ -277,7 +277,7 @@ const Converter: React.FC<ImageProp> = ({ image , outputImage}) => {
                     <div className="relative aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden">
                         {output ? (
                             <img
-                                src={ouputImage.src}
+                                src={outputImage.src}
                                 alt="Stylized"
                                 className="w-full h-full object-cover"
                             />
