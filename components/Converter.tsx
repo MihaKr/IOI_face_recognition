@@ -6,9 +6,11 @@ import {ImageDown, Wand2} from "lucide-react";
 
 interface ImageProp {
     image: { image: string; label: string; strength: number };
+    outputImage: HTMLImageElement;
+
 }
 
-const Converter: React.FC<ImageProp> = ({ image }) => {
+const Converter: React.FC<ImageProp> = ({ image , outputImage}) => {
     const [model, setModel] = useState<magenta.ArbitraryStyleTransferNetwork | null>(null);
     const [emotion, setEmotion] = useState("");
     const [inputImage, setInputImage] = useState<HTMLImageElement | null>(null);
@@ -19,6 +21,8 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
     const [isProcessing, setIsProcessing] = useState(false);
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const isProd = process.env.NODE_ENV === "production";
+    const pathPrefix = isProd ? "/IOI_face_recognition" : "";
 
     type EmotionConfig = {
         styles: { path: string; weight: number }[];
@@ -37,72 +41,72 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
     const emotionConfigs: EmotionConfigs = {
         happy: {
             styles: [
-                { path: '/IOI_face_recognition/styles/happy/happy1.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/happy/happy2.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/happy/happy3.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/happy/happy4.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/happy/happy5.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/happy/happy6.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/happy/happy1.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/happy/happy2.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/happy/happy3.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/happy/happy4.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/happy/happy5.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/happy/happy6.jpg', weight: 1 },
             ],
         },
 
         disgusted: {
             styles: [
-                { path: '/IOI_face_recognition/styles/disgust/disgust1.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/disgust/disgust2.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/disgust/disgust3.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/disgust/disgust4.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/disgust/disgust5.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/disgust/disgust1.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/disgust/disgust2.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/disgust/disgust3.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/disgust/disgust4.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/disgust/disgust5.jpg', weight: 1 },
             ],
         },
 
         neutral: {
             styles: [
-                { path: '/IOI_face_recognition/styles/neutral/neutral1.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/neutral/neutral2.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/neutral/neutral3.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/neutral/neutral4.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/neutral/neutral5.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/neutral/neutral1.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/neutral/neutral2.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/neutral/neutral3.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/neutral/neutral4.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/neutral/neutral5.jpg', weight: 1 },
             ],
         },
 
         surprised: {
             styles: [
-                { path: '/IOI_face_recognition/styles/surprise/surprised1.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/surprise/surprised2.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/surprise/surprised3.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/surprise/surprised4.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/surprise/surprised5.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/surprise/surprised1.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/surprise/surprised2.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/surprise/surprised3.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/surprise/surprised4.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/surprise/surprised5.jpg', weight: 1 },
             ],
         },
 
         angry: {
             styles: [
-                { path: '/IOI_face_recognition/styles/angry/angry1.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/angry/angry2.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/angry/angry3.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/angry/angry4.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/angry/angry5.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/angry/angry1.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/angry/angry2.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/angry/angry3.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/angry/angry4.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/angry/angry5.jpg', weight: 1 },
             ],
         },
 
         fearful: {
             styles: [
-                { path: '/IOI_face_recognition/styles/fear/fear1.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/fear/fear2.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/fear/fear3.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/fear/fear4.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/fear/fear5.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/fear/fear1.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/fear/fear2.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/fear/fear3.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/fear/fear4.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/fear/fear5.jpg', weight: 1 },
             ],
         },
 
         sad: {
             styles: [
-                { path: '/IOI_face_recognition/styles/sadness/sadness1.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/sadness/sadness2.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/sadness/sadness3.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/sadness/sadness4.jpg', weight: 1 },
-                { path: '/IOI_face_recognition/styles/sadness/sadness5.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/sadness/sadness1.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/sadness/sadness2.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/sadness/sadness3.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/sadness/sadness4.jpg', weight: 1 },
+                { path: pathPrefix + '/styles/sadness/sadness5.jpg', weight: 1 },
             ],
         },
     };
@@ -182,7 +186,8 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
             ctx.drawImage(inputImage, 0, 0);
             const currentImage = inputImage;
 
-            const selectedStyle = getStyleBySliderValue(sliderValue, config.styles); // Use updated logic
+            //const selectedStyle = getStyleBySliderValue(sliderValue, config.styles); // Use updated logic
+            const selectedStyle = getStyleBySliderValue(Math.floor(Math.random() * (5 - 1 + 1) + 5), config.styles); // Use updated logic
 
             console.log('Applying selected style:', selectedStyle.path);
 
@@ -272,7 +277,7 @@ const Converter: React.FC<ImageProp> = ({ image }) => {
                     <div className="relative aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden">
                         {output ? (
                             <img
-                                src={output.src}
+                                src={ouputImage.src}
                                 alt="Stylized"
                                 className="w-full h-full object-cover"
                             />

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, {useRef, useState} from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import FaceDetection from '@/components/FaceDetection';
@@ -17,7 +17,11 @@ export default function Home() {
         label: '',
         strength: 0.0
     });
+
+    const [outputImage, setOutputImage] = useState<HTMLImageElement>();
+
     const [isLoading] = useState(false);
+    const converterRef = useRef<any>(null);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -43,6 +47,8 @@ export default function Home() {
                                 <FaceDetection
                                     setImages={setImages}
                                     images={images}
+                                    selectedImage={selectedImage}
+                                    setSelectedImage={setSelectedImage}
                                 />
                             </CardContent>
                         </Card>
@@ -62,7 +68,19 @@ export default function Home() {
                     </TabsContent>
                 </Tabs>
 
-                {selectedImage.image && (
+                <footer className="text-center text-sm text-gray-500 dark:text-gray-400">
+                    <p>
+                        Built with Next.js, Face-API.js, and Magenta.js Style Transfer
+                    </p>
+                </footer>
+            </div>
+        </div>
+    );
+}
+
+/*
+*
+*                 {selectedImage.image && (
                     <Card>
                         <CardContent className="p-4">
                             <div className="space-y-4">
@@ -78,6 +96,7 @@ export default function Home() {
                                 ) : (
                                     <Converter
                                         image={selectedImage}
+                                        outputImage={outputImage}
                                     />
 
                                 )}
@@ -85,13 +104,4 @@ export default function Home() {
                         </CardContent>
                     </Card>
                 )}
-
-                <footer className="text-center text-sm text-gray-500 dark:text-gray-400">
-                    <p>
-                        Built with Next.js, Face-API.js, and Magenta.js Style Transfer
-                    </p>
-                </footer>
-            </div>
-        </div>
-    );
-}
+* */

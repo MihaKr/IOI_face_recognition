@@ -7,7 +7,6 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 import {CapturedImage, SomethingProps} from "@/app/types";
 
-
 const ImageGallery: React.FC<SomethingProps> = ({setImages, images, selectedImage, setSelectedImage}) => {
     const handleRemove = (index:number) => {
         setImages(images.filter((_, i) => i !== index));
