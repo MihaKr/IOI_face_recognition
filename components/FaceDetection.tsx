@@ -161,7 +161,7 @@ const FaceDetection: React.FC<FaceDetectionProps> = ({ setImages, images, select
             const currentImage = inputImage;
 
             //const selectedStyle = getStyleBySliderValue(sliderValue, config.styles); // Use updated logic
-            const selectedStyle = getStyleBySliderValue(Math.floor(Math.random() * (5 - 1 + 1) + 5), config.styles); // Use updated logic
+            const selectedStyle = getStyleBySliderValue(Math.floor(Math.random() * 5), config.styles);
 
             console.log('Applying selected style:', selectedStyle.path);
 
