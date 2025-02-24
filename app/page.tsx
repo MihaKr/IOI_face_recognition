@@ -33,6 +33,14 @@ export default function Home() {
                     <p className="text-base text-gray-600 dark:text-gray-300">
                         Capture your expressions and transform them with AI-powered style transfer
                     </p>
+                    <p className="text-base text-gray-600 dark:text-gray-300">
+                        How to use: Start the camera, make a face that shows a specific emotion (hint: act
+                        surprised),<br/>
+                        then wait for the timer to count down (the style transfer can take a few seconds).
+                    </p>
+                    <p className="text-base text-gray-600 dark:text-gray-300">
+                        Note: your computer should have a webcam and a gpu for this to work
+                    </p>
                 </header>
 
                 <Tabs defaultValue="camera" className="w-full">
@@ -70,7 +78,9 @@ export default function Home() {
 
                 <footer className="text-center text-sm text-gray-500 dark:text-gray-400">
                     <p>
-                        Built with Next.js, Face-API.js, and Magenta.js Style Transfer
+                        Built with Next.js, Face-API.js, and Magenta.js Style Transfer, code accessible on <a
+                        href="https://github.com/MihaKr/IOI_face_recognition" target="_blank"
+                        className="text-blue-500 hover:text-blue-700">GitHub</a>.
                     </p>
                 </footer>
             </div>
